@@ -1,0 +1,521 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<title>Wonder Home V</title>
+<meta name="description" content="2 and 3 BHK homes in Sector 101, Noida, opposite Bade Hanuman Ji Temple. From ₹75.2 lakh at ₹6,999 per sq ft. Possession in 11 months.">
+<meta name="theme-color" content="#0E1738">
+<link rel="preload" href="AnekLatin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="mark-reversed.svg" type="image/svg+xml">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+/* Layout: the building is a fixed, live stage; the page scrolls over it in glass panels on the left
+   (bottom on phones). Blue hour ground, Paper text, Lit Window kept for the price and the phone. */
+@font-face{font-family:"Anek Latin";src:url(AnekLatin.woff2) format("woff2");font-weight:400 800;font-display:swap;}
+@font-face{font-family:"Anek Devanagari";src:url(AnekDevanagari.woff2) format("woff2");font-weight:400 800;font-display:swap;unicode-range:U+0900-097F,U+200C-200D;}
+:root{
+  --evening:#0E1738;--blue-hour:#1B2F6E;--dusk:#3555A8;--lit:#FFC53D;--sky:#E3EBF8;--paper:#FFFFFF;--ink:#111728;--mute:#AFBEDF;
+  --glass:rgba(14,23,56,.74);--glass-strong:rgba(14,23,56,.88);--glass-line:rgba(227,235,248,.16);--hi:rgba(53,85,168,.38);
+  --font:"Anek Latin","Anek Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r-sm:4px;--r-md:10px;--r-lg:18px;
+  --gutter:clamp(16px,4vw,48px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--evening);color:var(--paper);font-family:var(--font);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,p,ul,ol,figure{margin:0}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit}
+a{color:var(--sky)}
+:focus-visible{outline:3px solid var(--lit);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.hi{font-family:"Anek Devanagari","Anek Latin",sans-serif;line-height:1.5}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- stage ---------- */
+#stage{position:fixed;inset:0;z-index:0;background:var(--blue-hour);overflow:hidden}
+#stage picture,#stage img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .8s ease}
+#stage canvas{position:absolute;inset:0;display:block;opacity:0;transition:opacity .8s ease}
+body.ready #stage canvas{opacity:1}
+body.ready #stage .poster{opacity:0}
+body.touring #stage{z-index:30}
+.nogl-note{display:none}
+body.nogl .nogl-note{display:block}
+body.nogl .needs-3d{display:none!important}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;left:0;right:0;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px)}
+.nav .in{display:flex;align-items:center;gap:20px;height:64px;padding-inline:var(--gutter)}
+.nav .logo{height:22px;width:auto;flex:none}
+.nav .links{display:flex;gap:4px;margin-left:auto;padding:4px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav .links a{color:var(--sky);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap;padding:6px 12px;border-radius:999px}
+.nav .links a:hover{color:var(--paper);background:var(--hi)}
+.nav .links a[aria-current="true"]{background:var(--paper);color:var(--blue-hour)}
+.nav .btn{min-height:42px;font-size:15px;padding:0 16px}
+@media (max-width:1060px){.nav .links{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 22px;border-radius:var(--r-md);font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;transition:background .15s ease,transform .15s ease}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-lit{background:var(--lit);color:var(--ink)}
+.btn-lit:hover{background:#ffd36a}
+.btn-paper{background:var(--paper);color:var(--blue-hour)}
+.btn-paper:hover{background:var(--sky)}
+.btn-ghost{background:transparent;color:var(--paper);border:1.5px solid rgba(227,235,248,.35)}
+.btn-ghost:hover{background:var(--hi)}
+
+/* ---------- sections ---------- */
+main{position:relative;z-index:10}
+.sec{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:96px var(--gutter) 48px}
+.panel{width:min(520px,100%);background:var(--glass);border:1px solid var(--glass-line);border-radius:var(--r-lg);padding:clamp(22px,3vw,34px);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:grid;gap:18px;min-width:0}
+.panel.wide{width:min(640px,100%)}
+.eyebrow{font-size:13px;line-height:20px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.panel h2{font-size:clamp(30px,3.6vw,46px);line-height:1.04;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.panel .lead{font-size:18px;line-height:1.55;color:var(--sky);max-width:56ch}
+.note{font-size:13px;line-height:1.5;color:var(--mute)}
+
+/* hero */
+#hero{align-items:flex-end;padding-bottom:clamp(32px,6vh,72px)}
+#hero .wrap{display:grid;gap:22px;max-width:760px}
+#hero .where{font-size:17px;font-weight:600;color:var(--sky);display:flex;flex-wrap:wrap;gap:6px 14px}
+#hero .where span+span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:2px;background:var(--lit);margin-right:14px;vertical-align:3px}
+#hero h1{font-size:clamp(44px,7.4vw,104px);line-height:.94;font-weight:800;letter-spacing:-.035em;text-wrap:balance;max-width:11ch;text-shadow:0 1px 30px rgba(14,23,56,.35)}
+#hero .row{display:flex;flex-wrap:wrap;gap:14px;align-items:stretch}
+.price{background:var(--lit);color:var(--ink);border-radius:var(--r-md);padding:16px 20px;display:grid;gap:2px;min-width:0}
+.price .l{font-size:14px;font-weight:600}
+.price .a{font-size:clamp(40px,4.6vw,60px);line-height:1;font-weight:800;letter-spacing:-.025em;color:var(--blue-hour);white-space:nowrap}
+.price .x{font-size:14px;line-height:1.4;margin-top:6px;max-width:34ch}
+.price .ph{font-size:20px;font-weight:800;color:var(--blue-hour);margin-top:8px}
+#hero .ctas{display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+#hero .hi{font-size:clamp(20px,2.2vw,26px);font-weight:600;color:var(--paper)}
+#hero .nogl-note{font-size:15px;color:var(--sky);background:var(--glass);padding:10px 14px;border-radius:var(--r-md);border:1px solid var(--glass-line)}
+.scrollcue{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mute)}
+.scrollcue i{width:18px;height:28px;border:1.5px solid var(--mute);border-radius:10px;position:relative}
+.scrollcue i::after{content:"";position:absolute;left:50%;top:5px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--lit);animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(9px);opacity:0}100%{opacity:0}}
+
+/* overview */
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--glass-line);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--glass-line)}
+.facts div{background:rgba(14,23,56,.6);padding:16px 18px;min-width:0}
+.facts b{display:block;font-size:30px;line-height:1.05;font-weight:800;letter-spacing:-.02em}
+.facts span{display:block;font-size:14px;color:var(--sky);margin-top:6px;line-height:1.35}
+.trust{display:flex;gap:12px;align-items:flex-start;font-size:16px;font-weight:600}
+.trust i{flex:none;width:12px;height:12px;border-radius:3px;background:var(--lit);margin-top:6px}
+.trust .hi{display:block;font-weight:500;color:var(--sky);font-size:16px}
+
+/* residences */
+.units{display:grid;gap:10px}
+.unit{display:grid;grid-template-columns:auto 1fr auto;gap:4px 16px;align-items:center;padding:14px 16px;border-radius:var(--r-md);border:1px solid var(--glass-line);background:rgba(14,23,56,.5);min-width:0}
+.unit .code{grid-row:1/3;width:52px;height:52px;border-radius:var(--r-md);display:grid;place-items:center;font-size:18px;font-weight:800;color:var(--blue-hour)}
+.unit .t{font-size:18px;font-weight:700}
+.unit .ar{font-size:14px;color:var(--sky);grid-column:2}
+.unit .pr{grid-row:1/3;grid-column:3;text-align:right}
+.unit .pr b{display:block;font-size:20px;font-weight:800}
+.unit .pr span{font-size:13px;color:var(--mute)}
+.unit .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.unit .acts .btn{min-height:40px;font-size:14px;padding:0 14px}
+.rate{font-size:15px;line-height:1.5;color:var(--sky);border-left:3px solid var(--lit);padding-left:12px}
+
+/* amenities */
+.amen{list-style:none;padding:0;display:grid;gap:0}
+.amen li{display:grid;grid-template-columns:28px 1fr;gap:4px 14px;padding:14px 0;border-bottom:1px solid var(--glass-line)}
+.amen li:last-child{border-bottom:0}
+.amen svg{width:24px;height:24px;color:var(--sky);grid-row:1/3;margin-top:2px}
+.amen b{font-size:18px}
+.amen span{font-size:15px;color:var(--sky);line-height:1.45}
+
+/* location */
+.travel{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+.travel h3{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding-bottom:8px;border-bottom:1px solid var(--glass-line)}
+.travel .r{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:15px;border-bottom:1px solid rgba(227,235,248,.07)}
+.travel .r b{white-space:nowrap}
+.travel .r b small{font-size:12px;color:var(--mute);margin-left:2px;font-weight:600}
+
+/* payment plan */
+.pay-sel{display:grid;gap:6px;font-size:14px;font-weight:600;color:var(--mute)}
+.pay-sel select{min-height:46px;border-radius:var(--r-sm);border:1.5px solid var(--glass-line);background:var(--evening);color:var(--paper);font:inherit;font-size:16px;padding:0 12px}
+.ms{list-style:none;padding:0;display:grid}
+.ms li{display:grid;grid-template-columns:18px 1fr auto;gap:2px 14px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--glass-line)}
+.ms li::before{content:"";width:12px;height:12px;border-radius:3px;background:var(--dusk);grid-row:1/3;align-self:center}
+.ms li:first-child::before{background:var(--lit)}
+.ms b{font-size:16px}
+.ms .d{font-size:13px;color:var(--mute);grid-column:2}
+.ms .p{grid-row:1/3;grid-column:3;text-align:right;font-weight:800;font-size:18px}
+.ms .p small{display:block;font-size:13px;color:var(--sky);font-weight:600}
+
+/* contact */
+#contact .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;width:min(960px,100%)}
+form.panel label{display:grid;gap:6px;font-size:14px;font-weight:600;color:var(--sky)}
+form.panel input,form.panel select{min-height:48px;border-radius:var(--r-sm);border:1.5px solid var(--glass-line);background:rgba(14,23,56,.7);color:var(--paper);font:inherit;font-size:16px;padding:0 12px;width:100%}
+form.panel input::placeholder{color:#8796BD}
+form.panel input:focus,form.panel select:focus{border-color:var(--sky);outline:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.err{color:#FFB4A8;font-size:14px}
+.phones{display:grid;gap:10px}
+.phones div{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.phones span{font-size:14px;color:var(--mute);min-width:110px}
+.phones b{font-size:24px;font-weight:800;color:var(--lit);white-space:nowrap}
+.copy{border:1.5px solid var(--glass-line);background:transparent;border-radius:6px;padding:5px 10px;font-size:13px;font-weight:600;cursor:pointer}
+.copy:hover{background:var(--hi)}
+@media (max-width:860px){#contact .grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+
+/* footer */
+footer{position:relative;z-index:10;background:var(--evening);border-top:1px solid var(--glass-line);padding:40px var(--gutter) calc(40px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--sky);line-height:1.55}
+footer .in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;max-width:1200px}
+footer .logo{height:24px;width:auto;margin-bottom:12px}
+footer p+p{margin-top:8px}
+footer .fine{font-size:13px;color:var(--mute)}
+@media (max-width:760px){footer .in{grid-template-columns:1fr}footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+
+/* ---------- pins ---------- */
+#pins{position:fixed;inset:0;z-index:5;pointer-events:none}
+body:not(.ready) #pins,body.touring #pins{display:none}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;transition:opacity .3s}
+.pin[data-hidden="true"]{opacity:0;pointer-events:none}
+.pin>button{position:absolute;left:-17px;top:-17px;width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);background:rgba(14,23,56,.7);display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.pin>button::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--lit)}
+.pin>button::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(255,197,61,.6);animation:ping 2.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(.7);opacity:1}80%,100%{transform:scale(1.5);opacity:0}}
+.pin .card{position:absolute;left:24px;top:-20px;width:230px;padding:12px 14px;border-radius:var(--r-md);background:var(--glass-strong);border:1px solid var(--glass-line);display:grid;gap:6px;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .2s,transform .2s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.pin.flip .card{left:auto;right:24px}
+.pin:hover .card,.pin:focus-within .card,.pin.open .card{opacity:1;transform:none;pointer-events:auto}
+.pin .card b{font-size:16px}
+.pin .card span{font-size:14px;color:var(--sky);line-height:1.4}
+.pin .card .go{display:flex;gap:12px;font-size:14px;font-weight:700}
+.pin .card .go a,.pin .card .go button{background:none;border:0;padding:0;color:var(--lit);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-weight:700}
+
+/* ---------- mobile ---------- */
+.mbar{position:fixed;left:0;right:0;bottom:0;z-index:25;display:none;grid-template-columns:1fr 1fr;gap:8px;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom,0px));background:var(--glass-strong);border-top:1px solid var(--glass-line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.mbar .btn{min-height:48px;font-size:16px}
+body.touring .mbar,body.touring .nav,body.touring main,body.touring footer{display:none}
+@media (max-width:760px){
+  .mbar{display:grid}
+  .sec{align-items:flex-end;padding-top:46svh;padding-bottom:88px}
+  #hero{padding-top:38svh;padding-bottom:96px}
+  #hero h1{font-size:clamp(40px,11vw,56px)}
+  #hero .row{flex-direction:column}
+  #hero .ctas .btn{width:100%}
+  .panel{padding:20px}
+  .travel{grid-template-columns:1fr}
+  .unit{grid-template-columns:auto 1fr}
+  .unit .pr{grid-row:auto;grid-column:2;text-align:left}
+  .pin .card{width:200px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="stage" aria-hidden="true">
+  <picture class="poster">
+    <source media="(max-aspect-ratio: 4/5)" srcset="poster-portrait.jpg">
+    <img class="poster" src="poster.jpg" alt="" fetchpriority="high">
+  </picture>
+</div>
+
+<header class="nav">
+  <div class="in">
+    <a href="#hero" aria-label="Wonder Home, back to top"><img class="logo" src="logo-reversed.svg" alt="Wonder Home" width="160" height="22"></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#overview">Overview</a>
+      <a href="#residences">Homes</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#location">Location</a>
+      <a href="#pay">Payment plan</a>
+      <a href="#contact">Book a visit</a>
+    </nav>
+    <a class="btn btn-lit wa" target="_blank" rel="noopener" data-wa="Hi, I want to book a site visit at Wonder Home V, Sector 101. Please share the location pin and the cost sheet."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+  </div>
+</header>
+
+<div id="pins" aria-label="Places on the building"></div>
+
+<main>
+  <section class="sec" id="hero" aria-labelledby="h-hero">
+    <div class="wrap">
+      <p class="where"><span>Wonder Home V</span><span>Sector 101, Noida</span><span>Opposite Bade Hanuman Ji Temple</span></p>
+      <h1 id="h-hero">2 and 3 BHK homes, five minutes from the metro.</h1>
+      <div class="row">
+        <div class="price">
+          <span class="l">2 BHK, 989 sq ft carpet, from</span>
+          <span class="a num">₹75.2 lakh</span>
+          <span class="x">At ₹6,999 per sq ft of super area. Parking, PLC, power backup and GST extra.</span>
+          <span class="ph num">+91 70602 00814</span>
+        </div>
+        <div class="ctas">
+          <button class="btn btn-paper needs-3d" type="button" data-tour="exterior"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cube"/></svg>Explore in 3D</button>
+          <a class="btn btn-lit wa" target="_blank" rel="noopener" data-wa="Hi, please send me the price sheet for Wonder Home V, Sector 101."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>Get the price sheet on WhatsApp</a>
+          <p class="hi" lang="hi">सही जगह, सही दाम।</p>
+        </div>
+      </div>
+      <p class="nogl-note">Your browser cannot show the 3D model, so this is a still of it. Every fact below is the same.</p>
+      <p class="scrollcue"><i></i>Scroll to move around the building</p>
+    </div>
+  </section>
+
+  <section class="sec" id="overview" aria-labelledby="h-over">
+    <div class="panel">
+      <p class="eyebrow">Overview</p>
+      <h2 id="h-over">One building. Seven floors. Five homes on each.</h2>
+      <p class="lead">A single UG + 6 building on the Sector 101 side of Noida, opposite Bade Hanuman Ji Temple. 35 homes in all, so you know your neighbours.</p>
+      <div class="facts">
+        <div><b class="num">35</b><span>homes, five on every floor</span></div>
+        <div><b class="num">11 months</b><span>to possession</span></div>
+        <div><b class="num">10%</b><span>to book, the rest as the building rises</span></div>
+        <div><b class="num">5 min</b><span>to Sector 101 metro</span></div>
+      </div>
+      <p class="trust"><i></i><span>200+ homes delivered in Noida since 2017. Ask us for the list and go and see them.<span class="hi" lang="hi">2017 से नोएडा में 200+ घर सौंप चुके हैं।</span></span></p>
+    </div>
+  </section>
+
+  <section class="sec" id="residences" aria-labelledby="h-res">
+    <div class="panel wide">
+      <p class="eyebrow">Residences</p>
+      <h2 id="h-res">Five layouts, the same on every floor.</h2>
+      <p class="rate">₹6,999 per sq ft of super area. Carpet area is super area less 8%. Parking, PLC, power backup and GST extra; stamp duty and registration as per government rates.</p>
+      <div class="units" id="units"></div>
+      <p class="note" id="res-note"></p>
+    </div>
+  </section>
+
+  <section class="sec" id="amenities" aria-labelledby="h-am">
+    <div class="panel">
+      <p class="eyebrow">Amenities</p>
+      <h2 id="h-am">What comes with the building.</h2>
+      <ul class="amen" id="amen"></ul>
+    </div>
+  </section>
+
+  <section class="sec" id="location" aria-labelledby="h-loc">
+    <div class="panel wide">
+      <p class="eyebrow">Location</p>
+      <h2 id="h-loc">Metro, Medanta and two malls, each five minutes away.</h2>
+      <div class="travel" id="travel"></div>
+      <p class="note">Times are from the brochure, by road in normal traffic. Message us and we will send the location pin.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="pay" aria-labelledby="h-pay">
+    <div class="panel">
+      <p class="eyebrow">Payment plan</p>
+      <h2 id="h-pay">You pay as the building rises.</h2>
+      <label class="pay-sel" for="pay-unit">Home<select id="pay-unit"></select></label>
+      <ol class="ms" id="ms"></ol>
+      <p class="note">Construction linked plan as printed in the brochure. Amounts are on the basic price only; parking, PLC, power backup and GST are extra.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="contact" aria-labelledby="h-con">
+    <div class="grid">
+      <div class="panel">
+        <p class="eyebrow">Book a site visit</p>
+        <h2 id="h-con">Come and stand on the plot. It takes an hour.</h2>
+        <p class="lead">Fill this in and it opens WhatsApp with your details typed. Or call. We will confirm a time and meet you at the gate in Sector 101.</p>
+        <div class="phones" id="phones"></div>
+        <p class="hi" lang="hi" style="font-size:20px;font-weight:600">एक बार साइट देख लीजिए, फिर फैसला कीजिए।</p>
+      </div>
+      <form class="panel" id="form" novalidate>
+        <label for="f-name">Your name<input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Full name"></label>
+        <label for="f-phone">Mobile number<input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="10 digit mobile"></label>
+        <div class="two">
+          <label for="f-unit">Home<select id="f-unit" name="unit"></select></label>
+          <label for="f-day">Day<select id="f-day" name="day"><option>Any day this week</option><option>Saturday</option><option>Sunday</option><option>A weekday evening</option></select></label>
+        </div>
+        <p class="err" id="err" hidden>Add your name and a 10 digit mobile number.</p>
+        <button class="btn btn-lit" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>Send on WhatsApp</button>
+        <p class="note">Your details go to the Wonder Home V sales team only.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="in">
+    <div>
+      <img class="logo" src="logo-reversed.svg" alt="Wonder Home" width="175" height="24">
+      <p>Wonder Home V, Sector 101, Noida, Uttar Pradesh. Opposite Bade Hanuman Ji Temple.</p>
+      <p>Developer: Infra Kraft Homes Private Limited. Marketed by Legacy Estate Private Limited.</p>
+      <p><a href="tour.html">Open the 3D tour on its own page</a></p>
+    </div>
+    <div class="fine">
+      <p>Areas are super built up and subject to the final sanctioned plan. Carpet area shown is super area less 8%. Prices are basic sale price at ₹6,999 per sq ft of super area; parking, PLC, power backup, GST, stamp duty and registration are extra. The 3D model and plans are artist impressions built from the architect's typical floor plan; furniture is indicative. Travel times are indicative. Nothing on this page is an offer; the agreement for sale governs.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="mbar" aria-label="Contact">
+  <a class="btn btn-paper" href="tel:+917060200814"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-call"/></svg>Call</a>
+  <a class="btn btn-lit wa" target="_blank" rel="noopener" data-wa="Hi, I want to book a site visit at Wonder Home V, Sector 101."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 1.8a8.2 8.2 0 1 1-4.2 15.3l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 0 1 12 3.8Zm-3.3 4.4c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.2 5 4.4 2.5 1 3 .8 3.5.7.5 0 1.7-.7 2-1.4.2-.7.2-1.3.1-1.4l-.5-.3-1.8-.9c-.2-.1-.4-.1-.6.1l-.8 1c-.2.2-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.6-1.1.1-.2 0-.4 0-.5l-.9-2c-.2-.5-.4-.5-.6-.5h-.6Z"/></symbol>
+  <symbol id="i-call" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.3 15.3 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1L6.6 10.8Z"/></symbol>
+  <symbol id="i-cube" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5 3.5 7v10l8.5 4.5 8.5-4.5V7L12 2.5Zm0 0v19M3.5 7 12 11.5 20.5 7"/></symbol>
+  <symbol id="i-lift" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M7 9l1.5-2L10 9M14 7l1.5 2L17 7"/></g></symbol>
+  <symbol id="i-parking" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></g></symbol>
+  <symbol id="i-security" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Zm-3 9 2 2 4-4"/></symbol>
+  <symbol id="i-fire" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 21c-3.9 0-7-2.7-7-6.6 0-3.4 2.6-5.3 3.6-8.4 2 1.3 2.8 3 2.8 4.6 1-1.3 1.6-3 1.4-5.6 3.4 2 6.2 5.4 6.2 9.4 0 3.9-3.1 6.6-7 6.6Z"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M13 2 5 13.5h6L10 22l9-12h-6.2L13 2Z"/></symbol>
+</svg>
+
+<script type="module">
+import { UNITS, FACTS, KEYFRAMES, PINS, unitPrice, rupees, waLink } from './wonderhome-data.js';
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const fmt = n => n.toLocaleString('en-IN');
+const tint = n => '#' + n.toString(16).padStart(6, '0');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- content from the shared data (works with no WebGL at all) ---------- */
+$$('a.wa').forEach(a => { a.href = waLink(a.dataset.wa); });
+const order = Object.keys(UNITS).sort((a, b) => UNITS[a].area - UNITS[b].area);
+$('#units').innerHTML = order.map(u => {
+  const x = UNITS[u], p = unitPrice(u);
+  return `<div class="unit">
+    <span class="code" style="background:${tint(x.tint)}">${u}</span>
+    <span class="t">${x.type}</span>
+    <span class="ar num">${fmt(x.carpet)} sq ft carpet, ${fmt(x.area)} sq ft super</span>
+    <span class="pr"><b class="num">${rupees(p)}</b><span class="num">${rupees(p * 0.1)} to book</span></span>
+    <span class="acts">
+      <a class="btn btn-lit" target="_blank" rel="noopener" href="${waLink(`Hi, I am interested in ${u}, ${x.type}, ${fmt(x.area)} sq ft at Wonder Home V, Sector 101. Please share the cost sheet and a site visit time.`)}">Ask about ${u}</a>
+      <button class="btn btn-ghost needs-3d" type="button" data-tour="plan" data-unit="${u}">See ${u} in 3D</button>
+    </span>
+  </div>`;
+}).join('');
+$('#res-note').textContent = FACTS.disclaimer;
+const icons = { lift: 'i-lift', parking: 'i-parking', security: 'i-security', fire: 'i-fire', power: 'i-power' };
+$('#amen').innerHTML = FACTS.highlights.map(h => `<li><svg aria-hidden="true"><use href="#${icons[h.k]}"/></svg><b>${h.t}</b><span>${h.d}</span></li>`).join('');
+$('#travel').innerHTML = FACTS.travel.map(g => `<div><h3>${g.group}</h3>${g.items.map(([n, m]) => `<div class="r"><span>${n}</span><b class="num">${m}<small>min</small></b></div>`).join('')}</div>`).join('');
+const opts = order.map(u => `<option value="${u}">${u}, ${UNITS[u].type}, ${fmt(UNITS[u].area)} sq ft</option>`).join('');
+$('#pay-unit').innerHTML = opts.replace(`value="F1"`, `value="F1" selected`);
+$('#f-unit').innerHTML = `<option value="">Not sure yet</option>${opts}`;
+function drawPlan() {
+  const total = unitPrice($('#pay-unit').value);
+  $('#ms').innerHTML = FACTS.plan.map(([t, d, pc]) => `<li><b>${t}</b><span class="d">${d}</span><span class="p num">${pc}%<small>${rupees(total * pc / 100)}</small></span></li>`).join('');
+}
+$('#pay-unit').addEventListener('change', drawPlan); drawPlan();
+$('#phones').innerHTML = FACTS.phones.map(p => `<div><span>${p.label}</span><b class="num">${p.text}</b><button class="copy" type="button" data-copy="${p.text}">Copy</button></div>`).join('');
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-copy]'); if (!b) return;
+  const v = b.dataset.copy, done = () => { b.textContent = 'Copied'; setTimeout(() => (b.textContent = 'Copy'), 1500); };
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(v).then(done, () => { b.textContent = v; });
+  else b.textContent = v;
+});
+$('#form').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, name = f.name.value.trim(), phone = f.phone.value.replace(/\D/g, '');
+  if (!name || phone.length < 10) { $('#err').hidden = false; return; }
+  $('#err').hidden = true;
+  const msg = `Hi, I want to book a site visit at Wonder Home V, Sector 101.\nName: ${name}\nPhone: ${phone}\nHome: ${f.unit.value || 'Not sure yet'}\nDay: ${f.day.value}\nPlease share the location pin and the cost sheet.`;
+  const a = Object.assign(document.createElement('a'), { href: waLink(msg), target: '_blank', rel: 'noopener' }); document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* ---------- nav highlight ---------- */
+const navLinks = $$('.nav .links a');
+const secIO = new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) navLinks.forEach(a => a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + en.target.id)));
+}), { rootMargin: '-45% 0px -50% 0px' });
+$$('main .sec').forEach(s => secIO.observe(s));
+
+/* ---------- 3D layer: optional, loaded after first paint ---------- */
+function hasWebGL() { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch { return false; } }
+let ctx = null, tourApi = null, savedY = 0;
+
+function viewShift(w, h) {
+  if (w >= 1060) return [-w * 0.17, 0];          // building right of the left hand panels
+  if (w < 760) return [0, h * 0.2];              // building in the upper part, panels at the bottom
+  return [-w * 0.1, 0];
+}
+
+function scrollProgress() {
+  const y = window.scrollY, anchors = KEYFRAMES.map(k => document.getElementById(k.id)?.offsetTop ?? 0);
+  for (let i = 0; i < anchors.length - 1; i++) {
+    if (y < anchors[i + 1]) return i + Math.max(0, (y - anchors[i]) / Math.max(1, anchors[i + 1] - anchors[i]));
+  }
+  return anchors.length - 1;
+}
+
+async function boot() {
+  if (!hasWebGL()) { document.body.classList.add('nogl'); return; }
+  let mod;
+  try { mod = await import('./wonderhome-scene.js'); } catch (err) { console.warn('3D unavailable', err); document.body.classList.add('nogl'); return; }
+  ctx = mod.createScene({ container: $('#stage'), mode: 'hero', viewShift });
+  window.__wh = ctx;
+  ctx.onFirstFrame = () => document.body.classList.add('ready');
+
+  // scroll scrub (native scroll, read on rAF)
+  let pending = false;
+  const onScroll = () => { if (pending || tourApi) return; pending = true; requestAnimationFrame(() => { pending = false; ctx.setScrollProgress(scrollProgress()); }); };
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+
+  // cursor parallax + idle orbit
+  let idleT = 0;
+  const poke = () => { ctx.setIdle(false); clearTimeout(idleT); idleT = setTimeout(() => { if (!tourApi) ctx.setIdle(true); }, 6000); };
+  addEventListener('pointermove', e => { if (e.pointerType === 'mouse') ctx.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); poke(); }, { passive: true });
+  ['scroll', 'keydown', 'pointerdown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, poke, { passive: true }));
+  poke();
+
+  buildPins();
+  ctx.afterRender = placePins;
+}
+
+/* ---------- hotspot pins ---------- */
+const pinEls = {};
+// section progress ranges (0 = hero, 1 = overview ... 6 = contact) where each pin is in clear view
+const PIN_RANGES = { balcony: [[0, 2.6], [3.7, 4.4]], stilt: [[2.45, 3.6]], roof: [[0, 1.4], [3.7, 4.4]], gate: [[0, 0.7], [3.7, 4.4], [5.6, 6]] };
+function buildPins() {
+  const host = $('#pins');
+  for (const p of PINS) {
+    const el = document.createElement('div'); el.className = 'pin'; el.dataset.hidden = 'true';
+    el.innerHTML = `<button type="button" aria-label="${p.label}. ${p.line}" aria-describedby="pc-${p.id}"></button>
+      <div class="card" id="pc-${p.id}" role="tooltip"><b>${p.label}</b><span>${p.line}</span>
+      <span class="go"><a href="#${p.section}">Learn more</a><button type="button" class="needs-3d" data-pin3d="${p.id}">Open in 3D</button></span></div>`;
+    el.querySelector('button').addEventListener('click', () => { document.getElementById(p.section).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); });
+    el.addEventListener('mouseenter', () => el.classList.add('open')); el.addEventListener('mouseleave', () => el.classList.remove('open'));
+    host.appendChild(el); pinEls[p.id] = el;
+  }
+  host.addEventListener('click', e => { const b = e.target.closest('[data-pin3d]'); if (b) { const p = PINS.find(x => x.id === b.dataset.pin3d); enterTour(p.tour); } });
+}
+function placePins() {
+  if (!ctx || tourApi) return;
+  const s = ctx.heroRig.s;
+  for (const p of ctx.projectPins()) {
+    const el = pinEls[p.id]; if (!el) continue;
+    // pins belong to the outside of the building: hide them where the camera is too close or the panel covers them
+    const inRange = (PIN_RANGES[p.id] || []).some(([a, b]) => s >= a && s <= b);
+    const show = p.visible && inRange;
+    el.dataset.hidden = String(!show);
+    if (show) { el.style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px)`; el.classList.toggle('flip', p.x > innerWidth - 270); }
+  }
+}
+
+/* ---------- Explore in 3D: the same canvas becomes the tour ---------- */
+async function enterTour(initial = {}) {
+  if (!ctx || tourApi) return;
+  const { mountTour } = await import('./wonderhome-tour.js');
+  savedY = scrollY; ctx.setIdle(false);
+  document.body.classList.add('touring');
+  tourApi = await mountTour(ctx, { host: document.body, initial, onExit: exitTour });
+}
+function exitTour() {
+  tourApi = null;
+  document.body.classList.remove('touring');
+  scrollTo({ top: savedY, behavior: 'instant' });
+  ctx.setScrollProgress(scrollProgress());
+  $('.needs-3d')?.focus({ preventScroll: true });
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-tour]'); if (!b) return;
+  enterTour({ mode: b.dataset.tour, unit: b.dataset.unit, level: b.dataset.unit ? 3 : undefined });
+});
+
+// first paint first; then fetch Three.js when the browser is idle
+const start = () => (window.requestIdleCallback ? requestIdleCallback(boot, { timeout: 1200 }) : setTimeout(boot, 200));
+if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+</script>
+
+</body></html>

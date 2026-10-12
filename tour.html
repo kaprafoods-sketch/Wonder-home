@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wonder Home V 3D Tour</title>
+<meta name="theme-color" content="#0E1738">
+<link rel="icon" href="mark-reversed.svg" type="image/svg+xml">
+<link rel="preload" href="AnekLatin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Anek Latin";src:url(AnekLatin.woff2) format("woff2");font-weight:400 800;font-display:swap;}
+@font-face{font-family:"Anek Devanagari";src:url(AnekDevanagari.woff2) format("woff2");font-weight:400 800;font-display:swap;unicode-range:U+0900-097F,U+200C-200D;}
+:root{color-scheme:dark;--evening:#0E1738;--sky:#E3EBF8}
+html,body{height:100%;margin:0}
+body{background:var(--evening);color:#fff;font:16px/1.5 "Anek Latin",system-ui,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+#stage{position:fixed;inset:0;touch-action:none}
+#stage canvas{display:block}
+.loading{position:fixed;inset:0;display:grid;place-items:center;font-size:18px;font-weight:600;color:var(--sky)}
+.loading[hidden]{display:none}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<p class="loading" id="loading">Loading Wonder Home V</p>
+<noscript><p class="loading">The 3D tour needs JavaScript. <a href="index.html">Back to the Wonder Home V page</a>.</p></noscript>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import { createScene } from './wonderhome-scene.js';
+import { mountTour } from './wonderhome-tour.js';
+import { UNITS } from './wonderhome-data.js';
+
+// Deep links: tour.html?mode=plan&level=3&unit=F1 (also accepted as #plan-3-F1)
+const qs = new URLSearchParams(location.search);
+const h = location.hash.replace('#', '').split('-');
+const mode = qs.get('mode') || (['exterior', 'plan', 'walk'].includes(h[0]) ? h[0] : 'exterior');
+const lv = parseInt(qs.get('level') ?? h[1], 10);
+const unit = qs.get('unit') || h[2];
+const initial = { mode, level: Number.isInteger(lv) && lv >= 0 && lv <= 6 ? lv : undefined, unit: UNITS[unit] ? unit : undefined };
+
+try {
+  const ctx = createScene({ container: document.getElementById('stage'), mode: 'tour' });
+  await mountTour(ctx, { host: document.body, initial, backHref: 'index.html' });
+  ctx.onFirstFrame = () => { document.getElementById('loading').hidden = true; };
+} catch (err) {
+  console.error(err);
+  document.getElementById('loading').innerHTML = 'This browser cannot show the 3D tour. <a href="index.html" style="color:#FFC53D">Back to the Wonder Home V page</a>.';
+}
+</script>
+</body>
+</html>
